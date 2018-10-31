@@ -44,6 +44,8 @@ async function enqueueLinks(page, requestQueue, selector, condition, label, urlM
  * @param {Page} page - Page to get the object from.
  */
 async function getHomeObject(page){
+    const url = window.location.href;
+    const zpid = url.match(/(\d+)_zpid/)[1];
     const jElem = await page.$('#hdpApolloPreloadedData');
     if(jElem){
         const jText = await getAttribute(jElem, 'textContent');
