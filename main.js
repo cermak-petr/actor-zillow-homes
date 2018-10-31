@@ -138,7 +138,7 @@ Apify.main(async () => {
 
         launchPuppeteerFunction: async () => {
             proxyConfig.userAgent = await Apify.utils.getRandomUserAgent();
-            const browser = Apify.launchPuppeteer(proxyConfig);
+            return Apify.launchPuppeteer(proxyConfig);
         },
 
         // This function is executed for each request.
