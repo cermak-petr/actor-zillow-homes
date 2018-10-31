@@ -95,7 +95,7 @@ function stripHomeObject(home){
 async function splitMap(request, requestQueue){
     // Get coordinates from url
     const url = request.url;
-    const cRegex = /([\d\.,\-]+)_rect/;
+    const cRegex = /\/([\d\.,\-]+)(_rect?)\//;
     const coords = url.match(cRegex)[1].split(',');
     const left = parseFloat(coords[0]), top = parseFloat(coords[1]), 
           right = parseFloat(coords[2]), bottom = parseFloat(coords[3]);
