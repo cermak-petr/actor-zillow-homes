@@ -146,11 +146,12 @@ Apify.main(async () => {
         // This function is executed for each request.
         // If request failes then it's retried 3 times.
         // Parameter page is Puppeteers page object with loaded page.
-        handlePageFunction: async ({ page, request }) => {
+        handlePageFunction: async ({ page, request, puppeteerPool }) => {
             
             // Re-enqueue if the page had captcha.
             const url = await page.url();
             if(url.indexOf('captcha') > -1){
+                await puppeteerPool.retire(page.browser());
                 const ud = request.userData;
                 if(!ud.repeats || ud.repeats < 4){
                     console.log('re-enqueuing because of ReCaptcha...');
@@ -163,7 +164,8 @@ Apify.main(async () => {
                         } 
                     }));
                 }
-                else{return {error: 'Retried 5 times because of ReCaptcha.'};}
+                else{console.log('retried 5 times because of ReCaptcha.');}
+                return;
             }
             
             // Print page URL.
