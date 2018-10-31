@@ -93,7 +93,7 @@ function stripHomeObject(home){
  */
 async function splitMap(request, requestQueue){
     // Get coordinates from url
-    const url = window.location.href;
+    const url = request.url;
     const zmRegex = /(\d+)_zm/;
     const cRegex = /[\d\.\-,]{10,}/;
     const zmNum = parseInt(url.match(zmRegex)[1]);
