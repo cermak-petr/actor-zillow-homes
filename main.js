@@ -126,7 +126,7 @@ async function getTotalHomes(page){
     const cElem = await page.$('#map-result-count-message');
     const cText = await getAttribute(cElem, 'textContent');
     const match = cText.match(/[\d,]+/);
-    return parseInt(match[0].replace(',', ''));
+    return match ? parseInt(match[0].replace(',', '')) : 0;
 }
 
 /**
