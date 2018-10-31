@@ -129,8 +129,8 @@ async function getTotalHomes(page){
         const match = elem.textContent.match(/[\d,]+/);
         return match ? parseInt(match[0].replace(',', '')) : null;
     };
-    await page.waitFor(getNumber);
-    return page.evaluate(getNumber);
+    await page.waitFor(getNumber, {timeout: 20000});
+    return await page.evaluate(getNumber);
 }
 
 /**
@@ -236,7 +236,7 @@ Apify.main(async () => {
             
             // Home list page, enqueue links or split the map.
             else{
-                await page.waitFor(10000);
+                //await page.waitFor(10000);
                 const total = await getTotalHomes(page);
                 const level = request.userData.level || 0;
                 if(total < 500 || (input.maxLevel && level >= input.maxLevel)){
