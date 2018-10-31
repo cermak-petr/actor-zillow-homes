@@ -88,6 +88,48 @@ function stripHomeObject(home){
 }
 
 /**
+ * Splits the map into 4 rectangles to avoid limitation for 1000 results.
+ * @param {Request} request - The current request.
+ * @param {RequestQueue} requestQueue - RequestQueue to add new pages to.
+ */
+async function splitMap(request, requestQueue){
+    // Get coordinates from url
+    const url = request.url;
+    const cRegex = /([\d\.,\-]+)_rect/;
+    const coords = url.match(cRegex)[1].split(',');
+    const left = coords[0], top = coords[1], 
+          right = coords[2], bottom = coords[3];
+    
+    // Calculate new rectangles
+    const rects = [
+        `${left},${top},${(left + right)/2},${(top + bottom)/2}`,
+        `${(left + right)/2},${top},${right},${(top + bottom)/2}`,
+        `${left},${(top + bottom)/2},${(left + right)/2},${bottom}`,
+        `${(left + right)/2},${(top + bottom)/2},${right},${bottom}`
+    ];
+    
+    // Enqueue all new rectangle pages
+    const level = (request.userData.level || 0) + 1;
+    for(const rect of rects){
+        await requestQueue.addRequest(new Apify.Request({
+            url: url.replace(cRegex, rect),
+            userData: {label: 'page', level}
+        }));
+    }
+}
+
+/**
+ * Gets total number of homes found on the map.
+ * @param {Page} page - The page to find the number on.
+ */
+async function getTotalHomes(page){
+    const cElem = await page.$('#map-result-count-message');
+    const cText = await getAttribute(cElem, 'textContent');
+    const match = cText.match(/[\d,]+/);
+    return parseInt(match[0].replace(',', ''));
+}
+
+/**
  * Creates a RequestList with startUrls from the Actor INPUT.
  * @param {Object} input - The Actor INPUT containing startUrls.
  */
@@ -190,13 +232,19 @@ Apify.main(async () => {
             
             // Home list page, enqueue links.
             else{
-                console.log('enqueuing home and pagination links...');
                 await page.waitFor(10000);
-                await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
-                const link = await page.$('#search-pagination-wrapper a:not([href])');
-                const lText = await getAttribute(link, 'textContent');
-                const pAllow = !input.maxPages || (parseInt(lText) < input.maxPages);
-                await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', link => pAllow, 'page');
+                if(await getTotalHomes(page) < 1000){
+                    console.log('enqueuing home and pagination links...');
+                    await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
+                    const link = await page.$('#search-pagination-wrapper a:not([href])');
+                    const lText = await getAttribute(link, 'textContent');
+                    const pAllow = !input.maxPages || (parseInt(lText) < input.maxPages);
+                    await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', link => pAllow, 'page');
+                }
+                else{
+                    console.log('more than 1000 results found, splitting the map...');
+                    await splitMap(request, requestQueue);
+                }
             }
         },
 
