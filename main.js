@@ -123,10 +123,14 @@ async function splitMap(request, requestQueue){
  * @param {Page} page - The page to find the number on.
  */
 async function getTotalHomes(page){
-    const cElem = await page.$('#map-result-count-message');
-    const cText = await getAttribute(cElem, 'textContent');
-    const match = cText.match(/[\d,]+/);
-    return match ? parseInt(match[0].replace(',', '')) : 0;
+    const getNumber = () => {
+        const elem = document.querySelector('#map-result-count-message');
+        if(!elem){return false;}
+        const match = elem.textContent.match(/[\d,]+/);
+        return match ? parseInt(match[0].replace(',', '')) : null;
+    };
+    await page.waitFor(getNumber);
+    return page.evaluate(getNumber);
 }
 
 /**
