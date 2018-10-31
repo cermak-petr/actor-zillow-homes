@@ -252,15 +252,21 @@ Apify.main(async () => {
             // Home list page, enqueue links or split the map.
             else{
                 await page.waitFor(10000);
+                const zpidRegex1 = /(\d+)_zpid/;
+                const zpidRegex2 = /zpid=(\d+)/;
                 const level = request.userData.level || 0;
                 const total = await getNumberOfPages(page);
                 
                 // Less than 500 results, enqueue the pages.
                 if(total < 20 || (input.maxLevel && level >= input.maxLevel)){
                     console.log('enqueuing home and pagination links...');
-                    await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail', null, async link => {
+                    await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail', url => {
+                        const eMatch = url.match(zpidRegex2);
+                        if(!eMatch){return url;}
+                        return `https://www.zillow.com/homes/${eMatch[1]}_zpid/`;
+                    }, async link => {
                         const href = await getAttribute(link, 'href');
-                        const match = href.match(/(\d+)_zpid/);
+                        const match = href.match(zpidRegex1) || href.match(zpidRegex2);
                         if(match){return match[1];}
                         console.log('warning, url without zpid: ' + href);
                     });
