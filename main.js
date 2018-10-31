@@ -235,7 +235,7 @@ Apify.main(async () => {
                 await page.waitFor(10000);
                 const total = await getTotalHomes(page);
                 const level = request.userData.level || 0;
-                if(total < 1000 || (input.maxLevel && level >= input.maxLevel)){
+                if(total < 500 || (input.maxLevel && level >= input.maxLevel)){
                     console.log('enqueuing home and pagination links...');
                     await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
                     const link = await page.$('#search-pagination-wrapper a:not([href])');
@@ -244,7 +244,7 @@ Apify.main(async () => {
                     await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', link => pAllow, 'page');
                 }
                 else{
-                    console.log('more than 1000 results found, splitting the map...');
+                    console.log('more than 500 results found, splitting the map...');
                     await splitMap(request, requestQueue);
                 }
             }
