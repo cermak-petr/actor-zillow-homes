@@ -260,7 +260,9 @@ Apify.main(async () => {
                     console.log('enqueuing home and pagination links...');
                     await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail', null, async link => {
                         const href = await getAttribute(link, 'href');
-                        return href.match(/(\d+)_zpid/)[1];
+                        const match = href.match(/(\d+)_zpid/);
+                        if(match){return match[1];}
+                        console.log('warning, url without zpid: ' + href);
                     });
                     const link = await page.$('#search-pagination-wrapper a:not([href])');
                     const lText = await getAttribute(link, 'textContent');
