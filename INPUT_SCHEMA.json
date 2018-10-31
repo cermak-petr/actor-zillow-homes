@@ -20,7 +20,7 @@
         "maxLevel": {
             "title": "Maximum map splitting level",
             "type": "integer",
-            "description": "Maximum number of map 4-way splits allowed when overcoming the 1000 results limit."
+            "description": "Maximum number of map 4-way splits allowed when overcoming the 500 results limit."
         },
         "showFacts": {
             "title": "Include home facts",
