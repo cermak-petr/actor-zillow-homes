@@ -192,11 +192,10 @@ Apify.main(async () => {
                 console.log('enqueuing home and pagination links...');
                 await page.waitFor(10000);
                 await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
-                await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', async link => {
-                    if(!input.maxPages){return true;}
-                    const lText = await getAttribute(link, 'textContent');
-                    return parseInt(lText) <= input.maxPages;
-                }, 'page');
+                const link = await page.$('#search-pagination-wrapper a:not([href])');
+                const lText = await getAttribute(link, 'textContent');
+                const pAllow = !input.maxPages || (parseInt(lText) < input.maxPages);
+                await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', link => pAllow, 'page');
             }
         },
 
