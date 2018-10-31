@@ -87,7 +87,6 @@ function stripHomeObject(home){
     }
 }
 
-
 /**
  * Creates a RequestList with startUrls from the Actor INPUT.
  * @param {Object} input - The Actor INPUT containing startUrls.
