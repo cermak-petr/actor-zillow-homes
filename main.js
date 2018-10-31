@@ -207,11 +207,12 @@ Apify.main(async () => {
             
             // Re-enqueue if the page had captcha.
             const url = await page.url();
-            if(url.indexOf('captcha') > -1){
+            const captcha = url.indexOf('captcha') > -1;
+            if(captcha || url.indexOf('AuthRequired') > -1){
                 await puppeteerPool.retire(page.browser());
                 const ud = request.userData;
                 if(!ud.repeats || ud.repeats < 4){
-                    console.log('re-enqueuing because of ReCaptcha...');
+                    console.log('re-enqueuing because of ' + (captcha ? 'ReCaptcha' : 'authorization') + '...');
                     await requestQueue.addRequest(new Apify.Request({ 
                         url: request.url, 
                         uniqueKey: Math.random() + '',
