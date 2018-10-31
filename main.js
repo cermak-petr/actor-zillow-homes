@@ -271,7 +271,7 @@ Apify.main(async () => {
                 else if (url.includes('.gif')) request.abort();
                 else if (url.includes('.css')) request.abort();
                 else if (url.includes('static/fonts')) request.abort();
-                else if (url.includes('js_tracking')) request.abort();
+                //else if (url.includes('js_tracking')) request.abort();
                 else if (url.includes('facebook.com')) request.abort();
                 else if (url.includes('googleapis.com')) request.abort();
                 else{
