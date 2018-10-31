@@ -17,6 +17,12 @@
             "default": { "useApifyProxy": true },
             "editor": "proxy"
         },
+        "showFacts": {
+            "title": "Include home facts",
+            "type": "boolean",
+            "description": "Include all information from the facts section.",
+            "default": true
+        },
         "liveView": {
             "title": "Enable LiveView",
             "type": "boolean",
