@@ -265,8 +265,8 @@ Apify.main(async () => {
             
             page.on('request', async (request) => {
                 const url = request.url();
-                if (url.includes('.js')) request.abort();
-                else if (url.includes('.png')) request.abort();
+                /*if (url.includes('.js')) request.abort();
+                else */if (url.includes('.png')) request.abort();
                 else if (url.includes('.jpg')) request.abort();
                 else if (url.includes('.gif')) request.abort();
                 else if (url.includes('.css')) request.abort();
