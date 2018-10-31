@@ -93,8 +93,10 @@ function stripHomeObject(home){
  */
 async function splitMap(request, requestQueue){
     // Get coordinates from url
-    const url = request.url;
+    const url = window.location.href;
+    const zmRegex = /(\d+)_zm/;
     const cRegex = /[\d\.\-,]{10,}/;
+    const zmNum = parseInt(url.match(zmRegex)[1]);
     const coords = url.match(cRegex)[0].split(',');
     const left = parseFloat(coords[0]), top = parseFloat(coords[1]), 
           right = parseFloat(coords[2]), bottom = parseFloat(coords[3]);
@@ -111,7 +113,7 @@ async function splitMap(request, requestQueue){
     const level = (request.userData.level || 0) + 1;
     for(const rect of rects){
         await requestQueue.addRequest(new Apify.Request({
-            url: url.replace(cRegex, rect),
+            url: url.replace(cRegex, rect).replace(zmRegex, (zmNum + 1) + '_zm'),
             userData: {label: 'page', level}
         }));
     }
