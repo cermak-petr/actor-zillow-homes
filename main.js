@@ -140,7 +140,7 @@ async function getTotalHomes(page){
 async function getNumberOfPages(page){
     const pLinks = await page.$$('#search-pagination-wrapper a[href]');
     if(pLinks.length > 0){
-        const pText = await getAttribute(pLinks[pLinks.length - 1], textContent);
+        const pText = await getAttribute(pLinks[pLinks.length - 1], 'textContent');
         return parseInt(pText);
     }
     return null;
