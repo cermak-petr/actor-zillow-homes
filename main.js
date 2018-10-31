@@ -230,10 +230,12 @@ Apify.main(async () => {
                 catch(e){console.log(e);}
             }
             
-            // Home list page, enqueue links.
+            // Home list page, enqueue links or split the map.
             else{
                 await page.waitFor(10000);
-                if(await getTotalHomes(page) < 1000){
+                const total = await getTotalHomes(page);
+                const level = request.userData.level || 0;
+                if(total < 1000 || (input.maxLevel && level >= input.maxLevel)){
                     console.log('enqueuing home and pagination links...');
                     await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
                     const link = await page.$('#search-pagination-wrapper a:not([href])');
