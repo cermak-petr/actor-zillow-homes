@@ -97,8 +97,8 @@ async function splitMap(request, requestQueue){
     const url = request.url;
     const cRegex = /([\d\.,\-]+)_rect/;
     const coords = url.match(cRegex)[1].split(',');
-    const left = coords[0], top = coords[1], 
-          right = coords[2], bottom = coords[3];
+    const left = parseFloat(coords[0]), top = parseFloat(coords[1]), 
+          right = parseFloat(coords[2]), bottom = parseFloat(coords[3]);
     
     // Calculate new rectangles
     const rects = [
