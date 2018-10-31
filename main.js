@@ -24,8 +24,7 @@ async function getAttribute(element, attr){
  * @param {Function} keyMod - Function for generating uniqueKey from the link ElementHandle.
  */
 async function enqueueLinks(page, requestQueue, selector, condition, label, urlMod, keyMod){
-    try{await page.waitForSelector(selector);}
-    catch(e){console.log(e); return;}
+    try{await page.waitForSelector(selector, {timeout: 60000});}catch(e){return;}
     const links = await page.$$(selector);
     for(const link of links){
         const href = await getAttribute(link, 'href');
