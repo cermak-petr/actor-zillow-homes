@@ -1,0 +1,28 @@
+{
+    "title": "Booking Crawler input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "startUrls": {
+            "title": "Start URLs",
+            "type": "array",
+            "description": "URLs to start with.",
+            "prefill": [{ "url": "http://example.com" }],
+            "editor": "requestListSources"
+        },
+        "proxyConfig": {
+            "title": "Proxy configuration",
+            "type": "object",
+            "description": "Optionally use Apify Proxy",
+            "default": { "useApifyProxy": true },
+            "editor": "proxy"
+        },
+        "liveView": {
+            "title": "Enable LiveView",
+            "type": "boolean",
+            "description": "The crawler will have LiveView enabled.",
+            "default": false
+        }
+    },
+    "required": ["startUrls"]
+}
