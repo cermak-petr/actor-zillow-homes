@@ -49,8 +49,9 @@ async function getHomeObject(page){
     if(jElem){
         const jText = await getAttribute(jElem, 'textContent');
         const info = JSON.parse(jText);
-        const key = `ForSaleSEORenderQuery{"zpid":${zpid}}`;
-        return info[key].property;
+        const key1 = `ForSaleSEORenderQuery{"zpid":${zpid}}`;
+        const key2 = `PreMarketSEORenderQuery{"zpid":${zpid}}`;
+        return (info[key1] || info[key2]).property;
     }
     return null;
 }
