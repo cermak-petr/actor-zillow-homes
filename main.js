@@ -90,7 +90,7 @@ function stripHomeObject(home){
  * Creates a RequestList with startUrls from the Actor INPUT.
  * @param {Object} input - The Actor INPUT containing startUrls.
  */
-function createRequestList(input){
+async function createRequestList(input){
     // check if attribute is an Array
     if(!Array.isArray(input.startUrls)){
         throw new Error('INPUT.startUrls must be an array!');
@@ -106,8 +106,9 @@ function createRequestList(input){
         input.startUrls[i] = request;
     }
     // create RequestList and reference startUrl
-    requestList = new Apify.RequestList({sources: input.startUrls});
+    const requestList = new Apify.RequestList({sources: input.startUrls});
     await requestList.initialize();
+    return requestList;
 }
 
 /** Main function */
@@ -116,9 +117,11 @@ Apify.main(async () => {
     // Main Actor INPUT
     const input = await Apify.getValue('INPUT');
     
-    // Get queue and enqueue first url.
+    // Create request queue
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.zillow.com/homes/for_sale/Portland-OR_rb/?fromHomePage=true&shouldFireSellPageImplicitClaimGA=false&fromHomePageTab=buy', userData: {label: 'start'} }));
+    
+    // Create request list  
+    const requestList = await createRequestList(input);
 
     // Simulated browser cache
     const cache = {};
@@ -130,6 +133,8 @@ Apify.main(async () => {
     
     // Create crawler.
     const crawler = new Apify.PuppeteerCrawler({
+        requestList,
+        
         requestQueue,
 
         launchPuppeteerFunction: async () => {
