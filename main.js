@@ -134,6 +134,19 @@ async function getTotalHomes(page){
 }
 
 /**
+ * Gets total number of current search pages.
+ * @param {Page} page - The page to find the number on.
+ */
+async function getNumberOfPages(page){
+    const pLinks = await page.$$('#search-pagination-wrapper a[href]');
+    if(pLinks.length > 0){
+        const pText = await getAttribute(pLinks[pLinks.length - 1], textContent);
+        return parseInt(pText);
+    }
+    return null;
+}
+
+/**
  * Creates a RequestList with startUrls from the Actor INPUT.
  * @param {Object} input - The Actor INPUT containing startUrls.
  */
@@ -236,10 +249,10 @@ Apify.main(async () => {
             
             // Home list page, enqueue links or split the map.
             else{
-                //await page.waitFor(10000);
-                const total = await getTotalHomes(page);
+                await page.waitFor(10000);
                 const level = request.userData.level || 0;
-                if(total < 500 || (input.maxLevel && level >= input.maxLevel)){
+                const total = await getNumberOfPages(page);
+                if(total < 20 || (input.maxLevel && level >= input.maxLevel)){
                     console.log('enqueuing home and pagination links...');
                     await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
                     const link = await page.$('#search-pagination-wrapper a:not([href])');
