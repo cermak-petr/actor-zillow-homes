@@ -254,14 +254,21 @@ Apify.main(async () => {
                 await page.waitFor(10000);
                 const level = request.userData.level || 0;
                 const total = await getNumberOfPages(page);
+                
+                // Less than 500 results, enqueue the pages.
                 if(total < 20 || (input.maxLevel && level >= input.maxLevel)){
                     console.log('enqueuing home and pagination links...');
-                    await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail');
+                    await enqueueLinks(page, requestQueue, 'a.hdp-link', null, 'detail', null, async link => {
+                        const href = await getAttribute(link, 'href');
+                        return href.match(/(\d+)_zpid/)[1];
+                    });
                     const link = await page.$('#search-pagination-wrapper a:not([href])');
                     const lText = await getAttribute(link, 'textContent');
                     const pAllow = !input.maxPages || (parseInt(lText) < input.maxPages);
                     await enqueueLinks(page, requestQueue, '#search-pagination-wrapper a.on', link => pAllow, 'page');
                 }
+                
+                // More than 500 results, split the map.
                 else{
                     console.log('more than 500 results found, splitting the map...');
                     await splitMap(request, requestQueue);
