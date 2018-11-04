@@ -8,7 +8,7 @@ you can set the maximum depth of the 4-way split zooms. This is done using the `
 
 In order for the actor to work correctly, you need to use only start URLs containing the map coordinates.  
 For example, something like this is fine:  
-https://www.zillow.com/homes/for_sale/globalrelevanceex_sort/__34.14161,-118.3882,34.10118,-118.446565___rect/13_zm/
+`https://www.zillow.com/homes/for_sale/globalrelevanceex_sort/__34.14161,-118.3882,34.10118,-118.446565___rect/13_zm/`
 
 ## Input attributes
 
