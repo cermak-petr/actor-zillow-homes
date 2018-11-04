@@ -23,7 +23,8 @@ Input is a JSON object with the following properties:
     "liveView": ENABE_LIVE_VIEW
 }
 ```
-
+  
+  
 * `startUrls` is the only required attribute. This an array of start URLs.  It should look like this:  
 ```javascript
 "startUrls": [
