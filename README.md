@@ -45,5 +45,5 @@ Input is a JSON object with the following properties:
 }
 ```  
 * `maxLevel` sets the maximum depth of the 4-way split zooms.  
-* `showFacts` sets if the __facts__ array will be added to each result.  
+* `showFacts` sets if the `facts` array will be added to each result.  
 * `liveView` sets if Apify live view will be enabled.  
